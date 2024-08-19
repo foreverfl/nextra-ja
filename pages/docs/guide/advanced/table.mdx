@@ -1,0 +1,201 @@
+import { Callout, Steps } from "nextra/components";
+
+# 테이블 렌더링
+
+## GFM 문법
+
+마크다운에서는 [GFM 문법](https://github.github.com/gfm/#tables-extension-)을 사용하여 테이블을 작성하는 것이 좋습니다.
+
+```mdx filename="Markdown"
+| left   | center | right |
+| :----- | :----: | ----: |
+| foo    |  bar   |   baz |
+| banana | apple  |  kiwi |
+```
+
+다음과 같이 렌더링됩니다:
+
+| left   | center | right |
+| :----- | :----: | ----: |
+| foo    |  bar   |   baz |
+| banana | apple  |  kiwi |
+
+## HTML 리터럴 테이블
+
+다음과 같은 리터럴 `<table />{:jsx}` 요소를 렌더링하려고 하면:
+
+```mdx filename="Markdown"
+<table>
+  <thead>
+    <tr>
+      <th>left</th>
+      <th align="center">center</th>
+      <th align="right">right</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>foo</td>
+      <td align="center">bar</td>
+      <td align="right">baz</td>
+    </tr>
+    <tr>
+      <td>banana</td>
+      <td align="center">apple</td>
+      <td align="right">kiwi</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+다음과 같은 결과를 얻게 됩니다:
+
+<table>
+  <thead>
+    <tr>
+      <th>left</th>
+      <th align="center">center</th>
+      <th align="right">right</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>foo</td>
+      <td align="center">bar</td>
+      <td align="right">baz</td>
+    </tr>
+    <tr>
+      <td>banana</td>
+      <td align="center">apple</td>
+      <td align="right">kiwi</td>
+    </tr>
+  </tbody>
+</table>
+
+<Callout type="warning">
+  스타일이 적용되지 않은 요소들이 보이나요? 이런 현상이 발생하는 이유를
+  [여기](#why-this-happens)에서 설명했습니다.
+</Callout>
+
+## 동적 테이블
+
+### 작성 방법
+
+동적 테이블을 렌더링하고 싶으신가요? 테이블에 JavaScript 표현식을 삽입하여 사용할 수 있습니다:
+
+```mdx filename="Markdown"
+<table>
+  <thead>
+    <tr>
+      <th>Country</th>
+      <th>Flag</th>
+    </tr>
+  </thead>
+  <tbody>
+    {[
+      { country: "France", flag: "🇫🇷" },
+      { country: "Ukraine", flag: "🇺🇦" },
+    ].map((item) => (
+      <tr key={item.country}>
+        <td>{item.country}</td>
+        <td>{item.flag}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+```
+
+다음과 같이 렌더링됩니다:
+
+<table>
+  <thead>
+    <tr>
+      <th>Country</th>
+      <th>Flag</th>
+    </tr>
+  </thead>
+  <tbody>
+    {[
+      { country: "France", flag: "🇫🇷" },
+      { country: "Ukraine", flag: "🇺🇦" },
+    ].map((item) => (
+      <tr key={item.country}>
+        <td>{item.country}</td>
+        <td>{item.flag}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+<Callout type="warning">
+  스타일이 적용되지 않은 요소들이 보이나요? 그 이유를 아래에서 설명하겠습니다 👇
+</Callout>
+
+### 예상치 못한 결과
+
+테이블이 [GFM 문법 테이블](#gfm-syntax)과 다르게 보입니다:
+
+1. 테이블 본문 `<tbody />{:jsx}`의 자식 요소들만 스타일이 적용됨
+
+2. 테이블 헤더에 스타일이 적용되지 않음
+
+3. 테이블에 상단 여백이 없음
+
+### 왜 이러한 문제가 발생하나요? [#why-this-happens]
+
+MDX2는 리터럴 HTML 요소를 `<MDXProvider />{:jsx}`로 대체하지 않습니다.
+
+Tailwind CSS의 창시자인 Adam Wathan은 MDX2에 다음과 같은 *탈출구*를 요청하는 [이슈](https://github.com/mdx-js/mdx/issues/821)를 제출했습니다:
+
+> 마크다운 태그만 변환하고 리터럴 HTML 태그는 변환하지 말아주세요
+
+테이블 헤더가 스타일 없이 보이는 이유는 Nextra의 MDX 컴포넌트인 `<tr />{:jsx}`, `<th />{:jsx}`, `<td />{:jsx}`로 대체되지 않기 때문이며, 같은 이유로 `<table />{:jsx}` 리터럴도 대체되지 않아 기본 상단 여백인 `mt-6`이 없습니다.
+
+### 해결 방법
+
+#### 일회성 수정
+
+테이블을 중괄호 `{`와 `}`로 감싸기만 하면 됩니다. 예를 들어:
+
+```text filename="Markdown"
+{<table>
+  ...
+</table>}
+```
+
+#### 기본 동작 변경
+
+이 문제가 여전히 혼란스럽고 테이블에 일반 리터럴 HTML 요소를 사용하고 싶다면, 다음과 같이 하세요:
+
+<Steps>
+### `remark-mdx-disable-explicit-jsx` 패키지 설치
+
+```sh npm2yarn
+npm i remark-mdx-disable-explicit-jsx
+```
+
+### 설정
+
+`next.config.mjs` 파일 내의 `nextra` 함수에서 플러그인을 구성하세요
+
+```js filename="next.config.mjs" {2,8-13}
+import nextra from "nextra";
+import remarkMdxDisableExplicitJsx from "remark-mdx-disable-explicit-jsx";
+
+const withNextra = nextra({
+  theme: "nextra-theme-docs",
+  themeConfig: "./theme.config.tsx",
+  mdxOptions: {
+    remarkPlugins: [
+      [
+        remarkMdxDisableExplicitJsx,
+        { whiteList: ["table", "thead", "tbody", "tr", "th", "td"] },
+      ],
+    ],
+  },
+});
+
+export default withNextra();
+```
+
+</Steps>

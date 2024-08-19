@@ -1,0 +1,74 @@
+import { Callout, Steps } from "nextra/components";
+
+# Next.js I18n
+
+<Callout emoji="⚠️">이 기능은 문서 테마에서만 사용 가능합니다.</Callout>
+
+Nextra는 [Next.js 국제화 라우팅](https://nextjs.org/docs/advanced-features/i18n-routing)을 기본적으로 지원합니다. 이 문서에서는 이를 구성하고 사용하는 방법을 설명합니다.
+
+<Steps>
+### I18n 구성 추가
+
+Nextra 애플리케이션에 다국어 페이지를 추가하려면 먼저 `next.config.js`에 `i18n`을 구성해야 합니다:
+
+```js filename="next.config.js" {7-10}
+const withNextra = require("nextra")({
+  theme: "nextra-theme-docs",
+  themeConfig: "./theme.config.tsx",
+});
+
+module.exports = withNextra({
+  i18n: {
+    locales: ["en-US", "zh-CN", "de-DE"],
+    defaultLocale: "en-US",
+  },
+});
+```
+
+### 미들웨어 추가
+
+그 다음, 프로젝트 루트에 `middleware.js` 파일을 추가해야 합니다 ([관련 Next.js 문서](https://nextjs.org/docs/advanced-features/middleware)):
+
+```js
+export { locales as middleware } from "nextra/locales";
+```
+
+이미 미들웨어가 정의되어 있다면 다음과 같이 할 수 있습니다:
+
+```js
+import { withLocales } from "nextra/locales";
+
+export const middleware = withLocales((request) => {
+  // 여기에 미들웨어 코드를 작성하세요...
+});
+```
+
+### 파일명에 로케일 추가
+
+그런 다음 파일 확장자에 로케일 코드를 추가합니다 (기본 로케일에도 필요):
+
+```plaintext
+/pages
+  _meta.en-US.json
+  _meta.zh-CN.json
+  _meta.de-DE.json
+  index.en-US.md
+  index.zh-CN.md
+  index.de-DE.md
+  ...
+```
+
+### 문서 테마 구성
+
+마지막으로, 언어 드롭다운을 구성하기 위해 `theme.config.jsx`에 `i18n` 옵션을 추가합니다:
+
+```js filename="theme.config.jsx"
+i18n: [
+  { locale: "en-US", text: "English" },
+  { locale: "zh-CN", text: "中文" },
+  { locale: "de-DE", text: "Deutsch" },
+  { locale: "ar-SA", text: "العربية", direction: "rtl" },
+];
+```
+
+</Steps>

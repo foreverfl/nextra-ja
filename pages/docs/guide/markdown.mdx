@@ -1,0 +1,122 @@
+# 마크다운
+
+## MDX
+
+Nextra를 사용하면 pages 디렉토리 아래의 모든 `.mdx` 파일이 [MDX](https://mdxjs.com/about)로 렌더링됩니다. 이는 React 컴포넌트를 지원하는 고급 Markdown 형식입니다.
+
+예를 들어, 다음과 같이 Markdown 파일 내에서 React 컴포넌트를 가져와 사용할 수 있습니다:
+
+```mdx filename="Markdown"
+## MDX 안녕하세요
+
+import { useState } from "react";
+
+export function Counter({ children }) {
+  const [count, setCount] = useState(0);
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      {children}
+      {count}
+    </button>
+  );
+}
+
+<Counter>**클릭**: </Counter>
+```
+
+생성 결과:
+
+import { Shadow } from "@components/utils/shadow";
+import { useState } from "react";
+
+export function Counter({ children }) {
+  const [count, setCount] = useState(0);
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      {children}
+      {count}
+    </button>
+  );
+}
+
+<div className="mt-6 rounded-xl border border-gray-200 p-4 dark:border-gray-900">
+  <Shadow mode="open">
+    <h2>MDX 안녕하세요</h2>
+    <Counter>**클릭**: </Counter>
+  </Shadow>
+</div>
+
+기본 MDX 외에도 Nextra에는 몇 가지 고급 Markdown 기능이 내장되어 있습니다.
+
+## GitHub Flavored Markdown
+
+[GFM](https://github.github.com/gfm)은 GitHub에서 만든 Markdown의 확장으로, 취소선, 작업 목록, 표 등을 지원합니다.
+
+### 취소선
+
+~~제거됨~~
+
+```md filename="Markdown"
+~~제거됨~~
+```
+
+### 작업 목록
+
+- [x] 보도 자료 작성
+- [ ] 웹사이트 업데이트
+- [ ] 미디어 연락
+
+```md filename="Markdown"
+- [x] 보도 자료 작성
+- [ ] 웹사이트 업데이트
+- [ ] 미디어 연락
+```
+
+### 표
+
+| 구문   |  설명  | 테스트 텍스트 |
+| :----- | :----: | ------------: |
+| 헤더   |  제목  | 여기 있습니다 |
+| 단락   | 텍스트 |     그리고 더 |
+| 취소선 |        |    ~~텍스트~~ |
+
+```md filename="Markdown"
+| 구문   |  설명  | 테스트 텍스트 |
+| :----- | :----: | ------------: |
+| 헤더   |  제목  | 여기 있습니다 |
+| 단락   | 텍스트 |     그리고 더 |
+| 취소선 |        |    ~~텍스트~~ |
+```
+
+### 자동 링크
+
+https://nextjs.org 방문하세요.
+
+```md
+https://nextjs.org 방문하세요.
+```
+
+### 사용자 지정 제목 ID
+
+`## 내 제목 [#사용자-지정-id]` 형식을 사용하여 사용자 지정 제목 ID를 지정할 수 있습니다. 예를 들어:
+
+```md filename="Markdown"
+## Long heading about Nextra [#about-nextra]
+```
+
+이 예시에서 `#about-nextra`는 기본값인 `#long-heading-about-nextra` 대신 제목 링크로 사용됩니다.
+
+## 확장된 구문 강조
+
+import { StarsIcon } from "@components/icons";
+import { Card, Cards } from "nextra/components";
+
+자세한 내용은 구문 강조 섹션을 확인하세요:
+
+<Cards>
+  <Card
+    icon={<StarsIcon />}
+    title="구문 강조"
+    href="/docs/guide/syntax-highlighting"
+  />
+</Cards>

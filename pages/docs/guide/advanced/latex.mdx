@@ -1,0 +1,39 @@
+# LaTeX
+
+Nextra는 [KaTeX](https://katex.org/)를 사용하여 MDX에서 직접 LaTeX 표현식을 렌더링합니다.
+LaTeX 지원을 활성화하려면 `next.config.js` 파일에서 `latex` 옵션을 활성화해야 합니다:
+
+```js filename="next.config.js"
+module.exports = require("nextra")({
+  latex: true,
+});
+```
+
+활성화되면 KaTeX의 CSS와 폰트가 자동으로 사이트에 포함되며, MDX 파일에서 수학 표현식을 작성할 수 있습니다. MDX 내에서 LaTeX를 사용하는 것은 표현식을 `$` 또는 `$$`로 감싸는 것만큼 간단합니다.
+
+## 예시
+
+예를 들어, 다음과 같은 Markdown 코드:
+
+```md filename="page.mdx"
+The **Pythagorean equation**: $a=\sqrt{b^2 + c^2}$.
+```
+
+다음과 같이 렌더링됩니다:
+
+<div className="mt-6 rounded-xl border border-gray-200 p-4 dark:border-gray-900">
+  The **Pythagorean equation**: $a=\sqrt{b ^ (2 + c) ^ 2}$.
+</div>
+
+LaTeX 표현식과 같은 줄에서 여전히 [Markdown과 MDX 구문](../markdown)을 사용할 수 있습니다.
+
+import { Callout } from "nextra/components";
+
+<Callout>
+  방정식으로 렌더링하는 대신 내용에 `$`를 표시하려면 백슬래시(`\`)로 이스케이프
+  처리할 수 있습니다. 예를 들어 `\$e = mc^2\$`는 \$e = mc^2\$로 렌더링됩니다.
+</Callout>
+
+## API
+
+KaTeX와 지원되는 함수 및 규칙에 대해 자세히 알아보려면 [KaTeX 문서](https://katex.org/docs/supported.html)를 방문하세요.

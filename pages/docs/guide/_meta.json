@@ -1,0 +1,12 @@
+{
+  "organize-files": "파일 구성하기",
+  "markdown": "마크다운",
+  "syntax-highlighting": "구문 강조",
+  "link": "Next.js 링크",
+  "image": "Next.js 이미지",
+  "ssg": "Next.js SSG",
+  "i18n": "Next.js 국제화",
+  "custom-css": "커스텀 CSS",
+  "advanced": "고급",
+  "built-ins": "내장 기능"
+}

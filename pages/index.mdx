@@ -1,0 +1,461 @@
+---
+title: Nextra – Next.js Static Site Generator
+---
+
+import { Feature, Features } from "@components/features";
+import { ArrowRightIcon } from "@components/icons";
+import cn from "clsx";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import docsCardDark from "../public/assets/card-1.dark.png";
+import docsCard from "../public/assets/card-1.png";
+import styles from "./index.module.css";
+
+export function File({ name, className, ...props }) {
+  return (
+    <span className={cn(styles.file, className)} {...props}>
+      {name}
+    </span>
+  );
+}
+
+export function Comparison({ a, b, invert, ...props }) {
+  return (
+    <div className={cn(styles.comparison, invert && styles.invert)} {...props}>
+      <div>{a}</div>
+      <ArrowRightIcon width="1.2em" />
+      <div>{b}</div>
+    </div>
+  );
+}
+
+export function I18n() {
+  const [active, setActive] = useState("");
+  return (
+    <Comparison
+      a={
+        <div style={{ display: "flex", flexDirection: "column", gap: ".5rem" }}>
+          <File
+            name="/hello.en-US.mdx"
+            className={active === "en" && styles.active}
+            onPointerOver={() => setActive("en")}
+          />
+          <File
+            name="/hello.de-DE.mdx"
+            className={active === "de" && styles.active}
+            onPointerOver={() => setActive("de")}
+          />
+          <File
+            name="/hello.ja-JP.mdx"
+            className={active === "ja" && styles.active}
+            onPointerOver={() => setActive("ja")}
+          />
+        </div>
+      }
+      b={
+        <div
+          style={{ display: "flex", flexDirection: "column" }}
+          className="menu overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-neutral-800 dark:ring-white dark:ring-opacity-20"
+        >
+          <span
+            className={cn(
+              "relative cursor-default select-none whitespace-nowrap px-4 py-1.5",
+              active === "en"
+                ? "nx-text-primary-600 nx-bg-primary-50 dark:nx-bg-primary-500/10"
+                : "text-gray-800 dark:text-gray-100 "
+            )}
+            onPointerOver={() => setActive("en")}
+          >
+            English
+          </span>
+          <span
+            className={cn(
+              "relative cursor-default select-none whitespace-nowrap px-4 py-1.5",
+              active === "de"
+                ? "nx-text-primary-600 nx-bg-primary-50 dark:nx-bg-primary-500/10"
+                : "text-gray-800 dark:text-gray-100 "
+            )}
+            onPointerOver={() => setActive("de")}
+          >
+            Deutsch
+          </span>
+          <span
+            className={cn(
+              "relative cursor-default select-none whitespace-nowrap px-4 py-1.5",
+              active === "ja"
+                ? "nx-text-primary-600 nx-bg-primary-50 dark:nx-bg-primary-500/10"
+                : "text-gray-800 dark:text-gray-100 "
+            )}
+            onPointerOver={() => setActive("ja")}
+          >
+            日本語
+          </span>
+        </div>
+      }
+    />
+  );
+}
+
+<div className="home-content">
+  <div className="content-container">
+    <h1 className="headline">Next.js와 MDX로 <br className='sm:block hidden'/>아름다운 웹사이트 만들기</h1>
+    <p className="subtitle">간단하고 강력하며 유연한 사이트 생성 프레임워크. <br className='sm:block hidden'/>당신이 <a className="nextjs-link" href="https://nextjs.org" target="_blank">Next.js</a>에서 좋아하는 모든 기능을 경험해보세요.</p>
+    <p className="subtitle">
+    <Link className={styles.cta} href="/docs">시작하기 <span>→</span></Link>
+    </p>
+  </div>
+  <style jsx>{`
+    .content-container {
+      max-width: 90rem;
+      padding-left: max(env(safe-area-inset-left),1.5rem);
+      padding-right: max(env(safe-area-inset-right),1.5rem);
+      margin: 0 auto;
+    }
+    .features-container {
+      margin: 8rem 0 0;
+      padding: 4rem 0;
+      background-color: #f3f4f6;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .features-container .content-container {
+      margin-top: -8rem;
+    }
+    :global(.dark) .features-container {
+      background-color: #000;
+      border-bottom: 1px solid rgb(38,38,38);
+    }
+    .headline {
+      display: inline-flex;
+      font-size: 3.125rem;
+      font-size: min(4.375rem, max(8vw, 2.5rem));
+      font-weight: 700;
+      font-feature-settings: initial;
+      letter-spacing: -.12rem;
+      margin-left: -0.2rem;
+      margin-top: 3.4rem;
+      line-height: 1.1;
+      background-image: linear-gradient(146deg,#000,#757a7d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    :global(.dark) .headline {
+      background-image: linear-gradient(146deg,#fff,#757a7d);
+    }
+    .subtitle {
+      font-size: 1.3rem;
+      font-size: min(1.3rem, max(3.5vw, 1.2rem));
+      font-feature-settings: initial;
+      line-height: 1.6;
+    }
+    .nextjs-link {
+      color: currentColor;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    :global(#docs-card) {
+      color: #fff;
+      text-shadow: 0 0 1rem rgba(0,0,0,0.1);
+    }
+    :global(#docs-card img) {
+      object-fit: cover;
+      object-position: left;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      height: 100%;
+      z-index: 0;
+      user-select: none;
+      pointer-events: none;
+    }
+    :global(#docs-card img:nth-child(2)) {
+      display: none;
+    }
+    :global(.dark #docs-card img:nth-child(2)) {
+      display: initial;
+    }
+    :global(.dark #docs-card img:nth-child(1)) {
+      display: none;
+    }
+    :global(#highlighting-card) {
+      min-height: 300px;
+      background-image: linear-gradient(to top, transparent, #fff 50%), url(/assets/syntax-highlighting.svg);
+      background-size: 634px;
+      background-position: -6px calc(100% + 4px);
+      background-repeat: no-repeat;
+    }
+    :global(.dark #highlighting-card) {
+      background-image: linear-gradient(to top, transparent, #202020 50%), url(/assets/syntax-highlighting.svg);
+    }
+    :global(.feat-darkmode) {
+      min-height: 300px;
+    }
+    :global(.feat-darkmode h3) {
+      font-size: 48px;
+    }
+    :global(#search-card) {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    :global(#search-card p) {
+      max-width: 320px;
+    }
+    :global(#search-card video) {
+      position: absolute;
+      right: 0;
+      top: 24px;
+      height: 430px;
+      pointer-events: none;
+      max-width: 60%;
+    }
+    :global(#fs-card) {
+      min-height: 240px;
+    }
+    :global(#fs-card h3) {
+      text-align: left;
+      width: min(300px, 41%);
+      min-width: 155px;
+    }
+    :global(#a11y-card) {
+      background-image: url(/assets/high-contrast.png);
+      background-position: -160px 160px;
+    }
+    @media screen and (max-width: 1300px) {
+      :global(#a11y-card) {
+        background-image: linear-gradient(to bottom, white, transparent), url(/assets/high-contrast.png);
+      }
+    }
+    @media screen and (max-width: 1200px) {
+      :global(#highlighting-card) {
+        aspect-ratio: auto;
+      }
+      :global(.feat-darkmode h3) {
+        font-size: 4vw;
+        font-size: min(48px, max(4vw, 30px));
+      }
+      :global(#search-card video) {
+        aspect-ratio: 787/623;
+        height: auto;
+      }
+      .headline {
+        letter-spacing: -.08rem;
+      }
+    }
+    @media screen and (max-width: 1024px) {
+      :global(#docs-card) {
+        aspect-ratio: 135/86;
+      }
+      :global(#search-card) {
+        aspect-ratio: 8/3;
+      }
+      :global(#search-card h3) {
+        text-align: left;
+      }
+      :global(#highlighting-card) {
+        background-size: 136%;
+      }
+      :global(#a11y-card) {
+        background-image: url(/assets/high-contrast.png);
+        background-position: center 160px;
+      }
+    }
+    @media screen and (max-width: 768px) {
+      :global(#docs-card) {
+        min-height: 348px;
+        width: 100%;
+        aspect-ratio: auto;
+      }
+      :global(#docs-card img) {
+        object-position: -26px 0;
+        width: 250%;
+        max-width: initial;
+      }
+    }
+    @media screen and (max-width: 640px) {
+      :global(#search-card) {
+        aspect-ratio: 2.5/2;
+        justify-content: flex-start;
+        align-items: stretch;
+        min-height: 350px;
+      }
+      :global(#search-card h3) {
+        text-align: center;
+      }
+      :global(#search-card p) {
+        max-width: 100%;
+      }
+      :global(#search-card video) {
+        position: relative;
+        margin: .75em -1.75em 0;
+        max-width: calc(100% + 3.5em);
+      }
+      :global(.dark #search-card video) {
+        mix-blend-mode: lighten;
+      }
+    }
+  `}</style>
+
+  <div className="features-container">
+    <div className="content-container">
+      <Features>
+        <Feature index={0} large centered id="docs-card" href="/docs/docs-theme/start">
+            <Image src={docsCard} alt="배경" loading="eager" />
+            <Image src={docsCardDark} alt="배경 (다크모드)" loading="eager" />
+            <h3>몇 분 만에 완성되는<br className="show-on-mobile"/> 강력한 문서화</h3>
+        </Feature>
+        <Feature index={1} centered className="card-with-border" href="/docs/guide/image">
+            <div className="h-full flex flex-col justify-between">
+            <h3>링크와 이미지는 <br className="show-on-mobile"/>항상 <br className='sm:block hidden'/><span className="font-light">최적화됩니다</span></h3>
+            <p className='text-left mb-8'>Nextra는 가능한 경우 Markdown 링크와 이미지를 자동으로 [Next.js Link](https://nextjs.org/docs/routing/introduction#linking-between-pages)와 [Next.js Image](https://nextjs.org/docs/basic-features/image-optimization#local-images)로 변환합니다. 느린 탐색이나 레이아웃 이동이 없습니다.</p>
+            <div>
+                <div className={styles.optimization}>
+                    <div style={{ fontSize: '.9rem' }} className="leading-8">
+                    <code>{`[Learn more](/more)`}</code>
+                    <br/>
+                    <code>{`![Hero](/hero.png)`}</code>
+                    </div>
+                </div>
+                <ArrowRightIcon width="1.2em" className="text-neutral-400 rotate-90 my-6 mx-auto" />
+                <div className={styles.optimization}>
+                <div style={{ fontSize: '.9rem' }} className="leading-8">
+                    <code>{`<Link .../>`}</code>
+                    <br/>
+                    <code>{`<Image .../>`}</code>
+                </div>
+                </div>
+            </div>
+            </div>
+        </Feature>
+        <Feature index={2} id="highlighting-card" href="/docs/guide/syntax-highlighting">
+        <h3>고성능 구문 <br className="show-on-mobile"/>하이라이팅 기능</h3>
+        <p>[Shiki](https://shiki.matsu.io)가 제공하는 성능이 뛰어나고 안정적인 빌드 타임 하이라이팅 강조 기능.</p>
+        </Feature>
+        <Feature index={3} href="/docs/guide/i18n">
+        <h3>새 파일을 만드는 것만큼<br className="show-on-mobile"/>쉬운 국제화</h3>
+        <p className='mb-4'>페이지 파일 이름에 로케일을 접미사로 추가하면 Nextra와 Next.js가 나머지를 처리합니다.</p>
+        <I18n/>
+        </Feature>
+        <Feature index={4} centered style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundImage: 'url(/assets/gradient-bg.jpeg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        color: '#fff'
+        }} href="/docs/guide/markdown">
+        <svg width="70%" viewBox="0 0 69 29" fill="none" xmlns="http://www.w3.org/2000/svg" style={{
+            filter: 'drop-shadow(0 2px 10px rgba(0, 0, 0, .1))'
+        }}>
+            <path fillRule="evenodd" clipRule="evenodd" d="M66.375 0.375H2.625C1.38236 0.375 0.375 1.38236 0.375 2.625V25.875C0.375 27.1176 1.38236 28.125 2.625 28.125H66.375C67.6176 28.125 68.625 27.1176 68.625 25.875V2.625C68.625 1.38236 67.6176 0.375 66.375 0.375ZM23.625 5.75368V9.375V21.875H20.625V12.9963L16.1857 17.4357L15.125 18.4963L14.0643 17.4357L9.75 13.1213V22H6.75V9.5V5.87868L9.31066 8.43934L15.125 14.2537L21.0643 8.31434L23.625 5.75368ZM29.5607 12.5643L33.75 16.7537V5.375H36.75V16.7537L40.9393 12.5643L43.0607 14.6857L36.3107 21.4357L35.25 22.4963L34.1893 21.4357L27.4393 14.6857L29.5607 12.5643ZM62.3105 19.5592L56.1228 13.3736L62.4357 7.06066L60.3143 4.93934L54.0011 11.2526L47.6855 4.93916L45.5645 7.06084L51.8798 13.3739L45.6893 19.5643L47.8107 21.6857L54.0014 15.4949L60.1895 21.6808L62.3105 19.5592Z" fill="#fff"/>
+        </svg>
+        <p style={{
+            textShadow: '0 2px 4px rgb(0 0 0 / 20%)'
+        }}><a href="https://mdxjs.com/blog/v2" target="_blank" style={{ color: 'currentColor' }}>MDX 2</a>를 사용하면 <br className='sm:block hidden'/> Markdown 내에서 컴포넌트를 사용할 수 있으며, <br className="hide-medium"/>v1에 비해 큰 성능 향상이 있습니다.</p>
+        </Feature>
+        <Feature index={5} centered className="feat-darkmode" style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        }}>
+          <motion.div
+            animate={{
+              backgroundPosition: ['0% 0%', '50% 40%', '50% 40%', '100% 100%'],
+              backgroundImage: [`radial-gradient(farthest-corner, #e2e5ea, #e2e5ea)`, 'radial-gradient(farthest-corner, #06080a, #e2e5ea)', 'radial-gradient(farthest-corner, #06080a, #e2e5ea)', 'radial-gradient(farthest-corner, #e2e5ea, #e2e5ea)'],
+            }}
+            transition={{
+              backgroundPosition: {
+                times: [0, .5, .5, 1],
+                type: 'tween',
+                repeat: Infinity,
+                duration: 10,
+                delay: 1
+              },
+              backgroundImage: {
+                times: [0, .2, .8, 1],
+                repeat: Infinity,
+                duration: 10,
+                delay: 1
+              },
+            }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundImage: `radial-gradient(farthest-corner, #06080a, #e2e5ea)`,
+              backgroundSize: '400% 400%',
+              backgroundRepeat: 'no-repeat',
+            }}
+          />
+          <motion.h3
+            animate={{
+              color: ['#dae5ff', '#fff', '#fff', '#dae5ff'],
+            }}
+            transition={{
+              color: {
+                times: [.25, .35, .7, .8],
+                type: 'tween',
+                repeat: Infinity,
+                duration: 10,
+                delay: 1
+              },
+            }}
+            style={{
+              position: 'relative',
+              mixBlendMode: 'difference',
+            }}
+          >다크 <br/>모드 <br/>지원</motion.h3>
+        </Feature>
+        <Feature index={6} large id="search-card" href="/docs/docs-theme/theme-configuration#search">
+            <div style={{ zIndex: 2}}>
+                <h3>전체 텍스트 검색, <br/>설정 필요 없음</h3>
+                <p>Nextra는 빌드 시 자동으로 콘텐츠를 인덱싱하고 FlexSearch를 통해 놀랍도록 빠른 전체 텍스트 검색을 수행합니다.</p>
+            </div>
+            <div className="absolute w-full h-full inset-0 hidden sm:block bg-[linear-gradient(to_right,white_250px,_transparent)] dark:bg-[linear-gradient(to_right,#202020_250px,_transparent)] z-[1]"/>
+            <video autoPlay="autoplay" loop muted playsInline className="dark:hidden block">
+                <source src="/assets/search.mp4" type="video/mp4"/>
+            </video>
+            <video autoPlay="autoplay" loop muted playsInline className="dark:block hidden -translate-x-4">
+                <source src="/assets/search-dark.mp4" type="video/mp4"/>
+            </video>
+        </Feature>
+        <Feature index={7} large id="fs-card" style={{
+            color: 'white',
+            backgroundImage: 'url(/assets/routing.png), url(/assets/gradient-bg.jpeg)',
+            backgroundSize: '140%, 180%',
+            backgroundPosition: '130px -8px, top',
+            backgroundRepeat: 'no-repeat',
+            textShadow: '0 1px 6px rgb(38 59 82 / 18%)',
+            aspectRatio: '1.765',
+        }} href="/docs/docs-theme/page-configuration">
+        <h3>Next.js의 파일 <br className='sm:block hidden'/> 시스템 라우팅으로 <br className='sm:block hidden'/> 직관적인 <br className='sm:block hidden'/> 페이지 구성</h3>
+        </Feature>
+        <Feature index={8} id="a11y-card" className='card-with-border' style={{
+            backgroundSize: 750,
+            backgroundRepeat: 'no-repeat',
+            minHeight: 288
+        }}>
+            <h3>최우선 순위의 접근성</h3>
+            <p><b>대비 증가</b>와 <b>모션 감소</b>와 같은 <br className="show-on-mobile"/>시스템 옵션을 존중합니다.</p>
+        </Feature>
+        <Feature index={9} href="/docs/guide/ssg">
+            <h3>차세대 <br/>하이브리드 렌더링</h3>
+            <p className='mr-6'>Markdown 콘텐츠에 SSG, SSR, ISR을 포함한 Next.js의 하이브리드 렌더링 파워를 활용할 수 있습니다.</p>
+        </Feature>
+        <Feature index={10} large>
+            <h3>그리고 더 많은 기능...</h3>
+            <p>SEO / RTL 레이아웃 / 플러그인 테마 / 내장 컴포넌트 / 마지막 Git 수정 시간 / 다중 문서...<br/>탐험할 새로운 가능성들이 기다리고 있습니다.</p>
+            <p className="subtitle"><Link className="!no-underline" href="/docs">Nextra 시작하기 →</Link></p>
+        </Feature>
+      </Features>
+    </div>
+  </div>
+</div>

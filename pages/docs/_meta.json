@@ -1,0 +1,24 @@
+{
+  "index": "소개",
+  "guide": "가이드",
+  "-- Themes": {
+    "type": "separator",
+    "title": "테마"
+  },
+  "docs-theme": "문서 테마",
+  "blog-theme": "블로그 테마",
+  "custom-theme": "사용자 정의 테마",
+  "-- More": {
+    "type": "separator",
+    "title": "더보기"
+  },
+  "about-link": {
+    "title": "Nextra 소개",
+    "href": "/about"
+  },
+  "next.js-link": {
+    "title": "Next.js 문서 ↗",
+    "href": "https://nextjs.org?utm_source=nextra.site&utm_medium=referral&utm_campaign=sidebar",
+    "newWindow": true
+  }
+}

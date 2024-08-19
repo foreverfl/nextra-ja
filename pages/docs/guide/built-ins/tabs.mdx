@@ -1,0 +1,48 @@
+# Tabs 컴포넌트
+
+## 예시
+
+import { Tabs } from "nextra/components";
+
+{/* prettier-ignore */}
+<Tabs items={['pnpm', 'npm', 'yarn']}>
+  <Tabs.Tab>**pnpm**: 빠르고 디스크 공간을 효율적으로 사용하는 패키지 관리자입니다.</Tabs.Tab>
+  <Tabs.Tab>**npm**은 JavaScript 프로그래밍 언어를 위한 패키지 관리자입니다.</Tabs.Tab>
+  <Tabs.Tab>**Yarn**은 소프트웨어 패키징 시스템입니다.</Tabs.Tab>
+</Tabs>
+
+## 사용법
+
+### 기본
+
+{/* prettier-ignore */}
+```mdx
+import { Tabs } from 'nextra/components'
+
+<Tabs items={['pnpm', 'npm', 'yarn']}>
+  <Tabs.Tab>**pnpm**: Fast, disk space efficient package manager.</Tabs.Tab>
+  <Tabs.Tab>**npm** is a package manager for the JavaScript programming language.</Tabs.Tab>
+  <Tabs.Tab>**Yarn** is a software packaging system.</Tabs.Tab>
+</Tabs>
+```
+
+### 기본 선택 인덱스
+
+`defaultIndex` prop을 사용하여 기본 탭 인덱스를 설정할 수 있습니다:
+
+```mdx /defaultIndex="1"/
+import { Tabs } from "nextra/components";
+
+<Tabs items={["pnpm", "npm", "yarn"]} defaultIndex="1">
+  ...
+</Tabs>
+```
+
+그러면 `npm`이 기본 탭으로 설정됩니다:
+
+{/* prettier-ignore */}
+<Tabs items={['pnpm', 'npm', 'yarn']} defaultIndex="1">
+  <Tabs.Tab>**pnpm**: Fast, disk space efficient package manager.</Tabs.Tab>
+  <Tabs.Tab>**npm** is a package manager for the JavaScript programming language.</Tabs.Tab>
+  <Tabs.Tab>**Yarn** is a software packaging system.</Tabs.Tab>
+</Tabs>

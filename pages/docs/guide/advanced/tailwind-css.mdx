@@ -1,0 +1,23 @@
+# Tailwind CSS
+
+Tailwind CSS는 요소를 빠르게 스타일링하기 위해 미리 정의된 CSS 클래스를 제공하는 CSS 프레임워크입니다. Nextra 프로젝트에 Tailwind CSS를 설정하려면 공식 [Tailwind CSS 문서](https://tailwindcss.com/docs/guides/nextjs)를 참고하세요.
+
+Markdown 파일에서 Tailwind 클래스를 사용하려면, `tailwind.config.js` 파일의 `content` 목록에 `.md` 및 `.mdx` 파일을 추가해야 합니다:
+
+```js filename="tailwind.config.js" /md,mdx/
+/** @type {import('tailwindcss').Config} */
+// Tailwind CSS 설정 파일입니다.
+module.exports = {
+  content: [
+    "./pages/**/*.{js,jsx,ts,tsx,md,mdx}",
+    "./components/**/*.{js,jsx,ts,tsx,md,mdx}",
+
+    // `src` 디렉토리를 사용하는 경우:
+    "./src/**/*.{js,jsx,ts,tsx,md,mdx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+```

@@ -1,0 +1,28 @@
+# 커스텀 CSS 지원
+
+Nextra는 `.css`, `.module.css`, 그리고 Sass (`.scss`, `.sass`, `.module.scss`, `.module.sass`) 파일을 포함한 [Next.js의 내장 CSS 지원](https://nextjs.org/docs/basic-features/built-in-css-support)과 100% 호환됩니다.
+
+예를 들어, `styles.css`라는 다음과 같은 스타일시트를 고려해보세요:
+
+```css filename="styles.css"
+body {
+  font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", "Helvetica",
+    "Arial", sans-serif;
+  padding: 20px 20px 60px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+```
+
+`pages/_app.js` 파일을 생성하고 거기에 CSS 파일을 가져올 수 있습니다:
+
+```jsx filename="pages/_app.js"
+import "../styles.css";
+
+// 이 기본 내보내기는 새로운 'pages/_app.js' 파일에 필요합니다.
+export default function MyApp({ Component, pageProps }) {
+  return <Component {...pageProps} />;
+}
+```
+
+Next.js의 CSS 지원에 대해 더 자세히 알아보려면 [Next.js 문서](https://nextjs.org/docs/basic-features/built-in-css-support)를 확인하세요.

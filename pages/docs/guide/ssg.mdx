@@ -1,0 +1,67 @@
+# Next.js SSG
+
+Next.js를 사용하면 [정적 생성(SSG)](https://nextjs.org/docs/basic-features/pages#static-generation-recommended)을 사용하여 페이지를 사전 렌더링할 수 있습니다. 페이지는 빌드 시 생성되어 방문자에게 정적으로 제공됩니다. 또한 CDN에 의해 캐시되어 성능을 최대화할 수 있습니다.
+
+이는 Nextra에서도 지원됩니다. 다음은 예시입니다:
+
+import { useData } from "nextra/data";
+
+export const getStaticProps = ({ params }) => {
+  return fetch(`https://api.github.com/repos/shuding/nextra`)
+    .then((res) => res.json())
+    .then((repo) => ({
+      props: {
+        // 페이지 props에 'ssg' 필드를 추가합니다,
+        // 이는 Nextra 'useData' 훅에 제공될 것입니다.
+        ssg: {
+          stars: repo.stargazers_count,
+        },
+      },
+      // 페이지는 60초마다 오래된 것으로 간주되어 재생성됩니다.
+      revalidate: 60,
+    }));
+};
+
+export const Stars = () => {
+  // SSG에서 데이터를 가져와 컴포넌트로 렌더링합니다.
+  const { stars } = useData();
+  return <strong>{stars}</strong>;
+};
+
+<div className="mt-6 rounded-xl border border-gray-200 p-4 dark:border-gray-900">
+  Nextra는 GitHub에서 <Stars /> 개의 별을 받았습니다!
+</div>
+
+위의 숫자는 `getStaticProps`를 통해 빌드 시 생성되었습니다. [점진적 정적 재생성](https://nextjs.org/docs/basic-features/data-fetching#incremental-static-regeneration)이 활성화되어 있어 계속 최신 상태로 유지됩니다.
+
+---
+
+위 예시의 MDX 코드는 다음과 같습니다:
+
+```mdx
+import { useData } from "nextra/data";
+
+export const getStaticProps = ({ params }) => {
+  return fetch(`https://api.github.com/repos/shuding/nextra`)
+    .then((res) => res.json())
+    .then((repo) => ({
+      props: {
+        // 페이지 props에 'ssg' 필드를 추가합니다,
+        // 이는 Nextra 'useData' 훅에 제공될 것입니다.
+        ssg: {
+          stars: repo.stargazers_count,
+        },
+      },
+      // 페이지는 60초마다 오래된 것으로 간주되어 재생성됩니다.
+      revalidate: 60,
+    }));
+};
+
+export const Stars = () => {
+  // SSG에서 데이터를 가져와 컴포넌트로 렌더링합니다.
+  const { stars } = useData();
+  return <strong>{stars}</strong>;
+};
+
+Nextra는 GitHub에서 <Stars /> 개의 별을 받았습니다!
+```

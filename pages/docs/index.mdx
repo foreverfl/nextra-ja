@@ -1,0 +1,59 @@
+# Nextra
+
+**Nextra**는 Next.js 위에 구축된 프레임워크로, 콘텐츠 중심의 웹사이트를 만들 수 있게 해줍니다. Next.js의 모든 훌륭한 기능과 더불어 Markdown 기반 콘텐츠를 쉽게 만들 수 있는 추가 기능을 제공합니다.
+
+## 빠른 시작
+
+import { Cards } from "nextra/components";
+
+Nextra를 사용하기 시작하려면 먼저 테마를 선택해야 합니다:
+
+<Cards num={2}>
+  <Cards.Card image arrow title="문서 테마" href="/docs/docs-theme/start">
+    <>![문서 테마](/assets/docs-theme.png)</>
+  </Cards.Card>
+  <Cards.Card image arrow title="블로그 테마" href="/docs/blog-theme/start">
+    <>![블로그 테마](/assets/blog-theme.png)</>
+  </Cards.Card>
+</Cards>
+
+이러한 내장 테마를 사용하지 않고 Nextra를 사용하려면 [커스텀 테마](/docs/custom-theme) 문서를 참조하세요.
+
+## Nextra FAQ
+
+Nextra FAQ는 프로젝트에 대한 유용한 질문과 답변을 모아놓은 것입니다. 여기에 답변되지 않은 질문이 있다면 [discussion을 열어주세요](https://github.com/shuding/nextra/discussions).
+
+export function FAQBox({ title, children }) {
+  return (
+    <details
+      open
+      className="last-of-type:mb-0 rounded-lg bg-neutral-50 dark:bg-neutral-800 p-2 mt-4"
+    >
+      <summary>
+        <strong className="text-lg">{title}</strong>
+      </summary>
+      <div className="nx-p-2">{children}</div>
+    </details>
+  );
+}
+
+<FAQBox title="Nextra를 Next.js 앱 라우터와 함께 사용할 수 있나요?">
+  아니요, Nextra는 현재 `/pages` 디렉토리에서만 작동합니다. 앱 라우터에 대한
+  지원은 아직 구현되지 않았습니다. 하지만 `/app`과 `/pages`를 동시에 사용할 수
+  있습니다. 문서는 `/pages`에 넣고 다른 라우트는 `/app`에 넣으면 됩니다.
+</FAQBox>
+
+<FAQBox title="Nextra와 함께 특정 기술을 사용할 수 있나요?">
+  대부분의 경우 답변은 "예"입니다. Nextra는 단순히 Next.js 플러그인이기 때문에, React로 할 수 있는 거의 모든 것을 Nextra로도 할 수 있습니다. 다음은 몇 가지 예시와 가이드입니다:
+
+- [Tailwind CSS 사용하기](/docs/guide/tailwind-css)
+- [커스텀 CSS와 Sass 사용하기](/docs/guide/custom-css)
+- [커스텀 폰트 사용하기](https://nextjs.org/docs/basic-features/font-optimization)
+
+</FAQBox>
+
+<FAQBox title="Nextra에서 라이브 코딩 컴포넌트를 어떻게 추가할 수 있나요?">
+  [Sandpack](https://sandpack.codesandbox.io)이나
+  [react-live](https://github.com/FormidableLabs/react-live) 같은 라이브러리를
+  사용하면 MDX에 라이브 코딩 컴포넌트를 추가할 수 있습니다.
+</FAQBox>

@@ -1,0 +1,44 @@
+import { Callout } from "nextra/components";
+
+# useConfig
+
+<Callout type="warning">
+  **`useConfig` 훅은 프로젝트를 동적으로 구성하기 위해 만들어졌습니다**. 각
+  사용자 정의 가능한 기능에 대한 자세한 정보는 [테마
+  구성](/docs/docs-theme/theme-configuration)을 참조하세요.
+</Callout>
+
+`useConfig` 훅은 테마 구성 및 현재 페이지 컨텍스트의 데이터를 반환합니다.
+
+## 반환 값
+
+- `banner`: [배너](/docs/docs-theme/theme-configuration#banner)에 대한 데이터
+- `chat`: [채팅 링크](/docs/docs-theme/theme-configuration#chat-link)에 대한 데이터
+- `darkMode`: 테마가 다크 모드인지 여부를 나타내는 불리언
+- `direction`: 현재 [쓰기 방향](/docs/docs-theme/theme-configuration#writing-direction)을 정의하는 문자열
+- `docsRepositoryBase`: 문서 저장소에 대한 링크 문자열
+- `editLink`: [편집 링크](/docs/docs-theme/theme-configuration#edit-link)에 대한 데이터
+- `feedback`: [피드백 링크](/docs/docs-theme/theme-configuration#feedback-link)에 대한 데이터
+- `footer`: [푸터](/docs/docs-theme/theme-configuration#footer)에 대한 데이터
+- `gitTimestamp`: [마지막 업데이트 날짜](/docs/docs-theme/theme-configuration#last-updated-date)를 렌더링하는 함수
+- `head`: [Next.js Head 태그](https://nextjs.org/docs/pages/api-reference/components/head)와 동등한 기능
+- `i18n`: [국제화](/docs/guide/i18n)에 대한 데이터
+- `logo`: 웹사이트의 로고를 위한 React 컴포넌트
+- `logoLink`: `logo` 컴포넌트를 위한 링크
+- `navbar`: [내비게이션 바](/docs/docs-theme/theme-configuration#customize-the-navbar)와 관련된 컴포넌트
+- `navigation`: [내비게이션](/docs/docs-theme/theme-configuration#navigation)에 대한 옵션
+- `themeSwitch`: [테마 전환](/docs/docs-theme/theme-configuration#theme-switch)에 대한 데이터
+- `nextThemes`: 테마 구성에 대한 데이터 (참조: [pacocoursey/next-themes](https://github.com/pacocoursey/next-themes))
+- `notFound`: 페이지를 찾을 수 없을 때 표시할 데이터
+- `primaryHue`: [테마 색상](/docs/docs-theme/theme-configuration#theme-color)에 대한 데이터
+- `primarySaturation`: [테마 색상](/docs/docs-theme/theme-configuration#theme-color)에 대한 데이터
+- `project`: [프로젝트 링크](/docs/docs-theme/theme-configuration#project-link)에 대한 데이터
+- `search`: [검색](/docs/docs-theme/theme-configuration#search)에 대한 데이터
+- `serverSideError`: 서버 측 오류 발생 시 표시할 데이터 (`500.mdx` 페이지도 필요)
+- `sidebar`: [사이드바](/docs/docs-theme/theme-configuration#sidebar)에 대한 데이터
+- `toc`: [목차 사이드바](/docs/docs-theme/theme-configuration#toc-sidebar)에 대한 데이터
+- `useNextSeoOptions`: Next.js SEO 컴포넌트에 데이터를 전달하는 함수
+  (참조: [SEO 옵션](/docs/docs-theme/theme-configuration#seo-options))
+- `flexsearch`: 검색 구성에 대한 데이터
+- `title`: 현재 문서의 제목
+- `frontMatter`: 파싱된 [front matter](https://jekyllrb.com/docs/front-matter) 데이터

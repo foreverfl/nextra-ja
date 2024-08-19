@@ -1,0 +1,131 @@
+import { Screenshot } from "components/screenshot";
+import { Callout, Steps } from "nextra/components";
+
+# 커스텀 테마
+
+Nextra에서 테마는 레이아웃처럼 작동하며, 모든 페이지의 래퍼로 렌더링됩니다. 이 문서에서는 사용자 정의 테마를 만드는 과정을 안내해 드리겠습니다.
+
+선택적으로, 아래 단계를 따라 예제를 배포하고 추가로 개발할 수 있습니다:
+
+[![](https://vercel.com/button)](https://vercel.com/new/clone?s=https%3A%2F%2Fgithub.com%2Fshuding%2Fnextra-example&showOptionalTeamCreation=false)
+
+## 사용자 정의 테마 만들기
+
+<Steps>
+### Nextra가 테마를 사용하도록 구성
+
+먼저, Nextra에게 공식 테마 대신 사용자 정의 테마 파일을 사용하도록 지시해야 합니다. Next.js 설정에서 Nextra 플러그인에 테마 파일 경로를 전달할 수 있습니다:
+
+```js {2} filename="next.config.js"
+const withNextra = require('nextra')({
+  theme: './theme.tsx',
+})
+
+module.exports = withNextra({
+  // 기타 Next.js 설정
+  ...
+})
+```
+
+### 기본 테마 만들기
+
+이제 테마 작업을 시작할 수 있습니다! 루트 디렉토리에 해당하는 `theme.tsx` 파일을 기본 내용으로 생성하세요:
+
+```tsx filename="theme.tsx" /children/
+import type { NextraThemeLayoutProps } from "nextra";
+
+export default function Layout({ children }: NextraThemeLayoutProps) {
+  return (
+    <div>
+      <h1>My Theme</h1>
+      <div style={{ border: "1px solid" }}>{children}</div>
+    </div>
+  );
+}
+```
+
+이는 현재 페이지의 MDX 내용인 `children` prop을 받아 내용 주위에 다른 요소들을 감쌉니다. 테마를 만든 후, 간단히 `pages/index.mdx` 파일을 추가하고 결과를 확인할 수 있습니다:
+
+import customThemeImage from "../../public/assets/docs/custom-theme.png";
+
+<Screenshot src={customThemeImage} alt="사용자 정의 테마" />
+
+<br />
+
+테마 레이아웃 내에서 CSS 임포트나 다른 방법을 사용하여 스타일을 지정할 수 있습니다. `useRouter`, `Head`와 같은 Next.js 훅도 사용 가능합니다.
+
+### 활성 페이지의 메타데이터 렌더링
+
+`children` 외에도 테마 레이아웃에 다른 유용한 props가 전달됩니다. `pageOpts` props를 통해 테마는 페이지의 메타 정보에 접근할 수 있습니다.
+
+예를 들어, 다음 기능들을 구현해 봅시다:
+
+- `<title>`에 페이지 제목 렌더링
+- 간단한 목차 표시
+- 프론트 매터를 통해 `og:image`용 메타 태그 추가
+
+```tsx filename="theme.tsx" /pageOpts/
+import Head from "next/head";
+import type { NextraThemeLayoutProps } from "nextra";
+
+export default function Layout({ children, pageOpts }: NextraThemeLayoutProps) {
+  const { title, frontMatter, headings } = pageOpts;
+
+  return (
+    <div>
+      <Head>
+        <title>{title}</title>
+        <meta name="og:image" content={frontMatter.image} />
+      </Head>
+      <h1>My Theme</h1>
+      Table of Contents:
+      <ul>
+        {headings.map((heading) => (
+          <li key={heading.value}>{heading.value}</li>
+        ))}
+      </ul>
+      <div style={{ border: "1px solid" }}>{children}</div>
+    </div>
+  );
+}
+```
+
+### 전체 사이트의 페이지 맵 사용
+
+이제 현재 페이지뿐만 아니라 다른 페이지의 정보에도 의존하는 사이드바나 네비게이션 바 같은 것을 렌더링하고 싶다면, `pageMap` 값을 사용할 수 있습니다.
+
+예를 들어, 최상위 레벨의 모든 페이지를 포함하는 간단한 네비게이션 목록을 렌더링할 수 있습니다:
+
+```tsx filename="theme.tsx" /pageMap/
+import Link from "next/link";
+import type { NextraThemeLayoutProps } from "nextra";
+
+export default function Layout({ children, pageOpts }: NextraThemeLayoutProps) {
+  const { pageMap } = pageOpts;
+
+  return (
+    <div>
+      <h1>My Theme</h1>
+      {pageMap.map((item) => {
+        if (item.kind === "MdxPage") {
+          return (
+            <Link key={item.name} href={item.route}>
+              {item.route}
+            </Link>
+          );
+        }
+        return null;
+      })}
+      <div style={{ border: "1px solid" }}>{children}</div>
+    </div>
+  );
+}
+```
+
+디렉토리용 `Folder`나 `_meta.json` 파일용 `Meta`와 같은 다른 항목 종류도 있습니다. 모든 항목은 타입이 지정되어 있어 속성을 쉽게 알 수 있습니다.
+
+</Steps>
+
+## 고급 사용법
+
+<Callout type="warning">고급 사용법에 대한 문서는 현재 작성 중입니다.</Callout>

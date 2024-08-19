@@ -1,0 +1,105 @@
+import { FileIcon, NewsletterIcon } from "@components/icons";
+import { Card, Cards, FileTree } from "nextra/components";
+
+# 파일 구성하기
+
+Nextra는 먼저 `pages` 디렉토리에서 모든 Markdown 파일과 설정을 수집한 다음, 전체 사이트의 "페이지 맵 정보"를 생성하여 아래와 같은 *내비게이션 바*와 *사이드바*를 렌더링합니다:
+
+<br />
+
+<figure>
+  <>![Nextra 문서 테마의 예시](/assets/routing@1x.png)</>
+  <figcaption>
+    예시: [Nextra 문서 테마](/docs/docs-theme)는 Markdown 파일에서 자동으로
+    생성된 사이드바와 내비게이션 바를 가지고 있습니다.
+  </figcaption>
+</figure>
+
+## 기본 동작
+
+기본적으로 페이지 맵은 모든 `.md`와 `.mdx` 파일 이름과 디렉토리 구조를 포함하며, 알파벳 순으로 정렬됩니다. 그런 다음 Nextra는 [title](https://github.com/vercel/title) 패키지를 사용하여 파일 이름에서 형식화된 페이지 이름을 가져옵니다.
+
+예를 들어 다음과 같은 구조가 있다면:
+
+<FileTree>
+  <FileTree.Folder name="pages" defaultOpen>
+    <FileTree.File name="contact.md" />
+    <FileTree.File name="index.mdx" />
+    <FileTree.Folder name="about" defaultOpen>
+      <FileTree.File name="legal.md" />
+      <FileTree.File name="index.mdx" />
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+페이지 맵은 다음과 같습니다 (모든 이름이 알파벳 순으로 정렬되었음에 주목하세요):
+
+```json
+[
+  {
+    "name": "About",
+    "children": [{ "name": "Index" }, { "name": "Legal" }]
+  },
+  { "name": "Contact" },
+  { "name": "Index" }
+]
+```
+
+그리고 전역 페이지 맵은 Nextra에 의해 각 페이지에 번들링됩니다. 그런 다음 구성된 테마가 해당 페이지 맵으로 실제 UI를 렌더링합니다.
+
+## `_meta.json`
+
+각 페이지의 제목을 파일 이름에만 의존하지 않고 사용자 정의하는 것이 매우 일반적입니다. "Index"라는 제목의 페이지는 명확성이 부족합니다. 내용을 정확하게 나타내는 의미 있는 제목(예: "Home")을 지정하는 것이 좋습니다.
+
+이를 위해 `_meta.json`이 있습니다. 각 디렉토리에 `_meta.json` 파일을 둘 수 있으며, 이는 각 페이지의 기본 구성을 재정의하는 데 사용됩니다:
+
+<FileTree>
+  <FileTree.Folder name="pages" defaultOpen>
+    <FileTree.File name="_meta.json" />
+    <FileTree.File name="contact.md" />
+    <FileTree.File name="index.mdx" />
+    <FileTree.Folder name="about" defaultOpen>
+      <FileTree.File name="_meta.json" />
+      <FileTree.File name="legal.md" />
+      <FileTree.File name="index.mdx" />
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+그리고 `pages/_meta.json` 파일에 다음과 같이 작성할 수 있습니다:
+
+```json filename="pages/_meta.json"
+{
+  "index": "My Homepage",
+  "contact": "Contact Us",
+  "about": "About Us"
+}
+```
+
+이는 Nextra에 각 페이지의 순서와 올바른 제목을 알려줍니다. 또는 `title`을 사용하고 다른 구성도 함께 넣을 수 있습니다:
+
+```json filename="pages/_meta.json"
+{
+  "index": "My Homepage",
+  "contact": "Contact Us",
+  "about": {
+    "title": "About Us",
+    "...extra configurations...": "..."
+  }
+}
+```
+
+추가 구성은 추가 정보로 **테마**에 전달됩니다. 자세한 정보는 해당 페이지를 확인하세요:
+
+<Cards>
+  <Card
+    icon={<NewsletterIcon />}
+    title="Docs Theme →"
+    href="/docs/docs-theme/page-configuration"
+  />
+  <Card
+    icon={<FileIcon />}
+    title="Blog Theme →"
+    href="/docs/blog-theme/start"
+  />
+</Cards>

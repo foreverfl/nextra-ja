@@ -1,0 +1,19 @@
+# Npm2Yarn
+
+Nextra는 [`@theguild/remark-npm2yarn`](https://npmjs.com/package/@theguild/remark-npm2yarn) 패키지를 사용하여 `npm2yarn` 메타데이터가 있는 코드 블록을 `nextra/components`의 [`<Tabs />` 및 `<Tabs.Tab />` 컴포넌트](/docs/guide/built-ins/tabs)로 대체합니다.
+
+선택된 탭은 로컬 스토리지에 저장되며, 이후 페이지 렌더링 시 선택됩니다.
+
+## 예시
+
+```sh npm2yarn
+npm i -D @graphql-eslint/eslint-plugin
+```
+
+## 사용법
+
+````mdx filename="Markdown" /npm2yarn/
+```sh npm2yarn
+npm i -D @graphql-eslint/eslint-plugin
+```
+````

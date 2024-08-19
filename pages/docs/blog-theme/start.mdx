@@ -1,0 +1,83 @@
+import { Callout, Steps } from "nextra/components";
+
+# 시작하기
+
+<Callout type="warning">이 테마에 대한 문서는 현재 작성 중입니다.</Callout>
+
+<Callout>
+  블로그 테마의 예시는 [여기](https://demo.vercel.blog)에서 확인할 수 있으며,
+  소스 코드는 [여기](https://github.com/vercel/nextjs-portfolio-starter)에
+  있습니다.
+</Callout>
+
+[Docs 테마](/docs/docs-theme/start)와 유사하게, 다음 명령어로 블로그 테마를 설치할 수 있습니다:
+
+## 템플릿에서 빠르게 시작하기
+
+## 새 프로젝트로 시작하기
+
+<Steps>
+### 설치
+
+Nextra Docs 사이트를 수동으로 만들려면 **Next.js**, **React**, **Nextra**, 그리고 **Nextra Blog Theme**을 설치해야 합니다. 프로젝트 디렉토리에서 다음 명령어를 실행하여 의존성을 설치하세요:
+
+```sh npm2yarn
+npm i next react react-dom nextra nextra-theme-blog
+```
+
+<Callout>
+  프로젝트에 이미 Next.js가 설치되어 있다면, `nextra`와 `nextra-theme-blog`만
+  추가로 설치하면 됩니다.
+</Callout>
+
+### Next.js 설정 추가
+
+프로젝트의 루트 디렉토리에 다음과 같은 `next.config.js` 파일을 생성하세요:
+
+```js filename="next.config.js"
+const withNextra = require("nextra")({
+  theme: "nextra-theme-blog",
+  themeConfig: "./theme.config.jsx",
+});
+
+module.exports = withNextra();
+
+// 다른 Next.js 설정이 있다면 매개변수로 전달할 수 있습니다:
+// module.exports = withNextra({ /* other next.js config */ })
+```
+
+위의 설정으로 Nextra는 지정된 테마로 Next.js 프로젝트의 Markdown 파일을 처리할 수 있습니다. 다른 Nextra 설정은 [가이드](/docs/guide)에서 확인할 수 있습니다.
+
+### 블로그 테마 설정 생성
+
+마지막으로, 프로젝트의 루트 디렉토리에 해당하는 `theme.config.jsx` 파일을 생성하세요. 이 파일은 Nextra 블로그 테마를 구성하는 데 사용됩니다:
+
+```jsx filename="theme.config.jsx"
+export default {
+  footer: <p>MIT 2023 © Nextra.</p>,
+  head: ({ title, meta }) => (
+    <>
+      {meta.description && (
+        <meta name="description" content={meta.description} />
+      )}
+      {meta.tag && <meta name="keywords" content={meta.tag} />}
+      {meta.author && <meta name="author" content={meta.author} />}
+    </>
+  ),
+  readMore: "Read More →",
+  postFooter: null,
+  darkMode: false,
+  navs: [
+    {
+      url: "https://github.com/shuding/nextra",
+      name: "Nextra",
+    },
+  ],
+};
+```
+
+### 준비 완료!
+
+이제 `package.json`에 지정된 `next` 또는 `next dev` 명령어를 실행하여 프로젝트 개발을 시작할 수 있습니다! 🎉
+
+</Steps>

@@ -1,0 +1,781 @@
+import { Screenshot } from "components/screenshot";
+import { Callout } from "nextra/components";
+
+# 테마 설정 [#theme-configuration]
+
+테마는 [theme.config.jsx](/docs/docs-theme/start#create-docs-theme-config) 파일로 구성됩니다. 이 파일은 구성을 포함하는 객체를 내보내야 합니다. 예를 들면:
+
+```jsx filename="theme.config.jsx"
+export default {
+  project: {
+    link: "https://github.com/shuding/nextra",
+  },
+  logo: <b>Project</b>,
+};
+```
+
+각 옵션에 대한 자세한 정보는 아래에 나열되어 있습니다.
+
+import { OptionTable } from "components/table";
+
+## 전역 [#global]
+
+### 문서 저장소 [#docs-repository]
+
+문서의 저장소 URL을 설정합니다. 이는 "[이 페이지 수정하기](#edit-link)" 링크와 "[피드백](#feedback-link)" 링크를 생성하는 데 사용됩니다.
+
+<OptionTable
+  options={[["docsRepositoryBase", "string", "문서 저장소의 URL."]]}
+/>
+
+#### 경로 지정 [#specify-a-path]
+
+문서가 모노레포, 하위 폴더 또는 저장소의 다른 브랜치 안에 있는 경우, `docsRepositoryBase`를 문서의 `pages/` 폴더의 루트 경로로 간단히 설정할 수 있습니다. 예를 들어:
+
+```js
+export default {
+  docsRepositoryBase: "https://github.com/shuding/nextra/tree/main/docs",
+};
+```
+
+그러면 Nextra가 자동으로 모든 페이지에 대한 올바른 파일 경로를 생성합니다.
+
+### SEO 옵션 [#seo-options]
+
+`useNextSeoProps` 옵션을 통해 SEO 관련 설정을 구성할 수 있습니다. `useNextSeoProps` 함수는 [Next SEO](https://github.com/garmeeh/next-seo#add-seo-to-page) 컴포넌트에 전달될 props를 반환합니다.
+
+이것은 또한 훅이므로, 값을 조건부로 반환하기 위해 내부에서 `useRouter`와 같은 API를 사용할 수 있습니다.
+
+<OptionTable
+  options={[
+    [
+      "useNextSeoProps",
+      "() => NextSeoProps",
+      "Next SEO에 대한 옵션을 반환하는 React 훅 함수.",
+    ],
+  ]}
+/>
+
+예를 들어, 모든 페이지에서 `<title>`에 동일한 접미사를 렌더링할 수 있습니다:
+
+import titleSuffixImage from "../../../public/assets/docs/title-suffix.png";
+
+<Screenshot src={titleSuffixImage} alt="제목 접미사" />
+
+```js
+export default {
+  useNextSeoProps() {
+    return {
+      titleTemplate: "%s – SWR",
+    };
+  },
+};
+```
+
+`%s`는 페이지 제목으로 대체될 [플레이스 홀더](https://github.com/garmeeh/next-seo#title-template)입니다.
+
+홈페이지에 접미사를 추가하지 않도록 조건부로 반환할 수도 있습니다:
+
+```js
+import { useRouter } from "next/router";
+
+export default {
+  useNextSeoProps() {
+    const { asPath } = useRouter();
+    if (asPath !== "/") {
+      return {
+        titleTemplate: "%s – SWR",
+      };
+    }
+  },
+};
+```
+
+### 헤드 태그 [#head-tags]
+
+웹사이트의 `<head>` 태그를 구성합니다. 메타 태그, 제목, 파비콘 등을 추가할 수 있습니다.
+
+<OptionTable
+  options={[
+    [
+      "head",
+      "React.ReactNode | React.FC",
+      <>
+        <code>{"<head>"}</code> 내용을 렌더링하는 컴포넌트.
+      </>,
+    ],
+  ]}
+/>
+
+#### 정적 헤드 태그 [#static-head-tags]
+
+정적 헤드 태그만 있는 경우, `head`에 직접 넣는 것이 쉽습니다. 예를 들어:
+
+```jsx
+export default {
+  head: (
+    <>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta property="og:title" content="Nextra" />
+      <meta property="og:description" content="The next site builder" />
+    </>
+  ),
+};
+```
+
+#### 페이지 기반 동적 태그 [#dynamic-tags-based-on-page]
+
+현재 페이지의 프론트매터를 기반으로 헤드 태그를 동적으로 생성하기 위해 `head`를 *함수 컴포넌트*로 사용할 수도 있습니다. 예를 들어:
+
+```jsx
+import { useRouter } from "next/router";
+import { useConfig } from "nextra-theme-docs";
+
+export default {
+  head: () => {
+    const { asPath, defaultLocale, locale } = useRouter();
+    const { frontMatter } = useConfig();
+    const url =
+      "https://my-app.com" +
+      (defaultLocale === locale ? asPath : `/${locale}${asPath}`);
+
+    return (
+      <>
+        <meta property="og:url" content={url} />
+        <meta property="og:title" content={frontMatter.title || "Nextra"} />
+        <meta
+          property="og:description"
+          content={frontMatter.description || "The next site builder"}
+        />
+      </>
+    );
+  },
+};
+```
+
+`useConfig` 훅과 `frontMatter` 객체에 대한 자세한 정보는 [`useConfig`](/docs/docs-theme/api/use-config) API 섹션을 참조할 수 있습니다.
+
+### 다크 모드와 테마 [#dark-mode-and-themes]
+
+웹사이트의 테마 동작을 사용자 정의합니다.
+
+<OptionTable
+  options={[
+    ["darkMode", "boolean", "다크 모드 토글 버튼을 표시하거나 숨깁니다."],
+    [
+      "nextThemes",
+      "object",
+      <>
+        Configuration for the{" "}
+        <a
+          href="https://github.com/pacocoursey/next-themes#themeprovider"
+          target="_blank"
+        >
+          next-themes
+        </a>{" "}
+        패키지에 대한 구성.
+      </>,
+    ],
+  ]}
+/>
+
+### 테마 색상 [#theme-color]
+
+라이트 및 다크 테마에 대한 기본 색조와 채도 값을 설정하여 웹사이트의 테마 색상을 조정할 수 있습니다.
+
+<OptionTable
+  options={[
+    [
+      "primaryHue",
+      "number | { dark: number; light: number }",
+      "기본 테마 색상의 색조.",
+    ],
+    [
+      "primarySaturation",
+      "number | { dark: number; light: number }",
+      "기본 테마 색상의 채도.",
+    ],
+  ]}
+/>
+
+이 웹사이트에서 직접 시도해보세요:
+
+| 색조  | 채도         |
+| ----- | ------------ |
+| {hue} | {saturation} |
+
+export const hue = (
+  <div className="flex h-6 items-center gap-2">
+    <input
+      type="range"
+      min="0"
+      max="360"
+      step="1"
+      onChange={(e) => {
+        const value = `${e.target.value}deg`;
+        e.target.nextSibling.textContent = value;
+        document.documentElement.style.setProperty(
+          "--nextra-primary-hue",
+          value
+        );
+      }}
+    />
+    <code className="w-14 text-sm text-gray-500" />
+  </div>
+);
+
+export const saturation = (
+  <div className="flex h-6 items-center gap-2">
+    <input
+      type="range"
+      min="0"
+      max="100"
+      step="1"
+      onChange={(e) => {
+        const value = `${e.target.value}%`;
+        e.target.nextSibling.textContent = value;
+        document.documentElement.style.setProperty(
+          "--nextra-primary-saturation",
+          value
+        );
+      }}
+    />
+    <code className="text-sm text-gray-500 w-14" />
+  </div>
+);
+
+## 내비게이션 바 [#navbar]
+
+### 로고 [#logo]
+
+내비게이션 바에 렌더링되는 웹사이트의 로고. React 노드나 함수 컴포넌트일 수 있습니다.
+
+<OptionTable
+  options={[
+    ["logo", "React.ReactNode | React.FC", "웹사이트의 로고."],
+    ["logoLink", "boolean | string", "로고의 링크."],
+  ]}
+/>
+
+import logoImage from "../../../public/assets/docs/logo.png";
+
+<Screenshot src={logoImage} alt="사용자 정의 로고" />
+
+<div className="mt-8 text-center text-sm">
+  [StackBlitz에서 라이브 예제 보기
+  ↗](https://stackblitz.com/edit/nextra-2-docs-yrlccm?file=theme.config.jsx)
+</div>
+
+```jsx
+export default {
+  logo: (
+    <>
+      <svg width="24" height="24" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          d="M14.683 14.828a4.055 4.055 0 0 1-1.272.858a4.002 4.002 0 0 1-4.875-1.45l-1.658 1.119a6.063 6.063 0 0 0 1.621 1.62a5.963 5.963 0 0 0 2.148.903a6.035 6.035 0 0 0 3.542-.35a6.048 6.048 0 0 0 1.907-1.284c.272-.271.52-.571.734-.889l-1.658-1.119a4.147 4.147 0 0 1-.489.592z M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10s10-4.486 10-10S17.514 2 12 2zm0 2c2.953 0 5.531 1.613 6.918 4H5.082C6.469 5.613 9.047 4 12 4zm0 16c-4.411 0-8-3.589-8-8c0-.691.098-1.359.264-2H5v1a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-1h.736c.166.641.264 1.309.264 2c0 4.411-3.589 8-8 8z"
+        />
+      </svg>
+      <span style={{ marginLeft: ".4em", fontWeight: 800 }}>
+        My Cool Project
+      </span>
+    </>
+  ),
+};
+```
+
+### 프로젝트 링크 [#project-link]
+
+내비게이션 바에 프로젝트의 홈페이지로 연결되는 버튼을 표시합니다. 기본적으로 Nextra의 GitHub 저장소로 연결됩니다.
+
+<OptionTable
+  options={[
+    ["project.link", "string", "프로젝트 홈페이지의 URL."],
+    [
+      "project.icon",
+      "React.ReactNode | React.FC",
+      "프로젝트 링크의 아이콘 또는 요소.",
+    ],
+  ]}
+/>
+
+`project.link`와 `project.icon`을 구성하여 프로젝트 링크를 사용자 정의할 수 있습니다. 예를 들어 GitLab 저장소로 연결하도록 만들 수 있습니다:
+
+import projectLinkImage from "../../../public/assets/docs/project-link.png";
+
+<Screenshot src={projectLinkImage} alt="프로젝트 링크" full />
+
+```jsx
+export default {
+  project: {
+    link: "https://gitlab.com/inkscape/inkscape",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 256 256">
+        <path
+          fill="currentColor"
+          d="m231.9 169.8l-94.8 65.6a15.7 15.7 0 0 1-18.2 0l-94.8-65.6a16.1 16.1 0 0 1-6.4-17.3L45 50a12 12 0 0 1 22.9-1.1L88.5 104h79l20.6-55.1A12 12 0 0 1 211 50l27.3 102.5a16.1 16.1 0 0 1-6.4 17.3Z"
+        ></path>
+      </svg>
+    ),
+  },
+};
+```
+
+`icon`이 없으면 기본적으로 [GitHub 아이콘](https://primer.style/octicons/mark-github-16)이 됩니다.
+
+### 채팅 링크 [#chat-link]
+
+내비게이션 바에 프로젝트의 포럼이나 다른 소셜 미디어로 연결되는 버튼을 표시합니다.
+
+<OptionTable
+  options={[
+    ["chat.link", "string", "채팅 링크의 URL."],
+    [
+      "chat.icon",
+      "React.ReactNode | React.FC",
+      "채팅 링크의 아이콘 또는 요소.",
+    ],
+  ]}
+/>
+
+`chat.link`와 `chat.icon`을 구성하여 채팅 링크를 사용자 정의할 수 있습니다. 예를 들어 Twitter 계정으로 연결하도록 만들 수 있습니다:
+
+```jsx
+export default {
+  chat: {
+    link: "https://twitter.com/shuding_",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 248 204">
+        <path
+          fill="currentColor"
+          d="M221.95 51.29c.15 2.17.15 4.34.15 6.53 0 66.73-50.8 143.69-143.69 143.69v-.04c-27.44.04-54.31-7.82-77.41-22.64 3.99.48 8 .72 12.02.73 22.74.02 44.83-7.61 62.72-21.66-21.61-.41-40.56-14.5-47.18-35.07a50.338 50.338 0 0 0 22.8-.87C27.8 117.2 10.85 96.5 10.85 72.46v-.64a50.18 50.18 0 0 0 22.92 6.32C11.58 63.31 4.74 33.79 18.14 10.71a143.333 143.333 0 0 0 104.08 52.76 50.532 50.532 0 0 1 14.61-48.25c20.34-19.12 52.33-18.14 71.45 2.19 11.31-2.23 22.15-6.38 32.07-12.26a50.69 50.69 0 0 1-22.2 27.93c10.01-1.18 19.79-3.86 29-7.95a102.594 102.594 0 0 1-25.2 26.16z"
+        />
+      </svg>
+    ),
+  },
+};
+```
+
+`icon`이 없으면 기본적으로 Discord 아이콘이 됩니다.
+
+### 메뉴 및 사용자 정의 링크 [#menu-and-custom-links]
+
+내비게이션 바에 사용자 정의 메뉴나 링크를 추가하는 방법은 [페이지 구성](/docs/docs-theme/page-configuration#navbar-items)을 확인하세요.
+
+### 검색
+
+<OptionTable
+  options={[
+    [
+      "search.component",
+      `React.ReactNode | React.FC<{
+  className?: string
+  directories: Item[]
+}>`,
+      "",
+    ],
+    ["search.emptyResult", "React.ReactNode | React.FC", "결과 없음 텍스트"],
+    ["search.loading", "React.ReactNode | React.FC", "로딩 텍스트"],
+    ["search.error", "string | (() => string)", "오류 텍스트"],
+    ["search.placeholder", "string | (() => string)", "플레이스홀더 텍스트"],
+  ]}
+/>
+
+### 배너 [#banner]
+
+웹사이트 상단에 배너를 표시합니다. 경고나 공지를 표시하는 데 사용할 수 있습니다.
+
+<OptionTable
+  options={[
+    ["banner.dismissible", "boolean", "닫을 수 있는 배너인지 여부."],
+    ["banner.key", "string", "배너 상태(닫힘 여부)를 유지하기 위한 저장소 키."],
+    ["banner.text", "React.ReactNode | React.FC", "배너의 텍스트."],
+  ]}
+/>
+
+#### 배너 키 [#banner-key]
+
+배너는 닫을 수 있습니다. 기본적으로 `banner.key`는 "nextra-banner"가 되며, 이는 클라이언트에서 배너 상태(닫힘 여부)를 유지하기 위해 [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)에서 사용됩니다.
+
+배너 텍스트를 업데이트한 경우, 배너가 다시 표시되도록 키를 변경해야 합니다. 가장 좋은 방법은 항상 현재 텍스트에 대한 설명적인 키를 사용하는 것입니다. 예를 들어:
+
+import bannerImage from "../../../public/assets/docs/banner.png";
+
+<Screenshot src={bannerImage} alt="배너" />
+
+```jsx
+export default {
+  banner: {
+    key: "2.0-release",
+    text: (
+      <a href="https://nextra.site" target="_blank">
+        🎉 Nextra 2.0이 출시되었습니다. 자세히 알아보기 →
+      </a>
+    ),
+  },
+};
+```
+
+### 내비게이션 바 사용자 정의 [#customize-the-navbar]
+
+전체 내비게이션 바 컴포넌트를 사용자 정의합니다.
+
+<OptionTable
+  options={[
+    [
+      "navbar.component",
+      "React.ReactNode | React.FC<NavBarProps>",
+      "내비게이션 바 컴포넌트.",
+    ],
+    [
+      "navbar.extraContent",
+      "React.ReactNode | React.FC",
+      "마지막 아이콘 뒤에 추가 콘텐츠를 표시합니다.",
+    ],
+  ]}
+/>
+
+## 사이드바 [#sidebar]
+
+<OptionTable
+  options={[
+    [
+      "sidebar.defaultMenuCollapseLevel",
+      "number",
+      "왼쪽 메뉴가 기본적으로 접히는 폴더 레벨을 지정합니다. 기본값은 2입니다.",
+    ],
+    [
+      "sidebar.autoCollapse",
+      "boolean",
+      "true인 경우, defaultMenuCollapseLevel 위의 비활성 폴더를 자동으로 접습니다.",
+    ],
+    [
+      "sidebar.titleComponent",
+      `React.ReactNode | React.FC<{
+  type: string;
+  title: string;
+  route: string;
+}>`,
+      "사이드바 제목에 대한 사용자 정의 렌더러.",
+    ],
+    [
+      "sidebar.toggleButton",
+      "boolean",
+      "사이드바 토글 버튼을 숨기거나 표시합니다. 기본값은 `false`입니다.",
+    ],
+  ]}
+/>
+
+### 메뉴 접기 레벨 [#menu-collapse-level]
+
+기본적으로 사이드바 메뉴는 레벨 `2`에서 접힙니다. `sidebar.defaultMenuCollapseLevel`을 다른 숫자로 설정하여 이를 변경할 수 있습니다. 예를 들어, `1`로 설정하면 모든 폴더가 기본적으로 접히고, `Infinity`로 설정하면 모든 중첩 폴더가 기본적으로 펼쳐집니다.
+
+`sidebar.autoCollapse`가 `true`로 설정되면, 활성/포커스된 경로를 포함하지 않는 모든 폴더는 `sidebar.defaultMenuCollapseLevel`에 의해 설정된 레벨까지 자동으로 접힙니다. 예를 들어, `defaultMenuCollapseLevel`이 `2`이면 최상위 폴더는 자동으로 접히지 않습니다.
+
+### 사이드바 콘텐츠 사용자 정의 [#customize-sidebar-content]
+
+[구분자](/docs/docs-theme/page-configuration#separators) 항목과 함께 `sidebar.titleComponent` 옵션을 사용하여 사이드바 콘텐츠가 렌더링되는 방식을 사용자 정의할 수 있습니다:
+
+import { Tabs } from "nextra/components";
+import sidebarTitleComponentImage from "../../../public/assets/docs/sidebar-customized.png";
+
+<Screenshot src={sidebarTitleComponentImage} alt="사용자 정의 사이드바" />
+
+<div className="mt-8 text-center text-sm">
+  [StackBlitz에서 라이브 예제 보기
+  ↗](https://stackblitz.com/edit/nextra-2-docs-8xbfk3?file=pages%2F_meta.json,theme.config.jsx)
+</div>
+
+<Tabs items={['theme.config.jsx', 'pages/_meta.json']}>
+  <Tabs.Tab>
+    ```jsx
+    export default {
+      sidebar: {
+        titleComponent({ title, type }) {
+          if (type === 'separator') {
+            return (
+              <div style={{ background: 'cyan', textAlign: 'center' }}>{title}</div>
+            )
+          }
+          if (title === 'About') {
+            return <>❓ {title}</>
+          }
+          return <>👉 {title}</>
+        }
+      }
+    }
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```json
+    {
+      "index": "소개",
+      "--": {
+        "type": "separator",
+        "title": "구분자"
+      },
+      "frameworks": "JS 프레임워크 & 라이브러리",
+      "about": "소개"
+    }
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+## 콘텐츠 [#content]
+
+### MDX 컴포넌트 [#mdx-components]
+
+콘텐츠를 렌더링하기 위한 사용자 정의 [MDX 컴포넌트](https://mdxjs.com/table-of-components/)를 제공합니다. 예를 들어, 코드 블록을 렌더링하기 위해 사용자 정의 `pre` 컴포넌트를 사용할 수 있습니다.
+
+<OptionTable
+  options={[
+    ["components", "Record<string, React.FC>", "사용자 정의 MDX 컴포넌트."],
+  ]}
+/>
+
+### 쓰기 방향 [#writing-direction]
+
+웹사이트의 기본 쓰기 방향.
+
+<OptionTable options={[["direction", '"ltr" | "rtl"', "기본 쓰기 방향."]]} />
+
+### 메인 콘텐츠
+
+페이지의 메인 영역 상단 및/또는 하단에 콘텐츠를 렌더링합니다. 이는 댓글 섹션, 뉴스레터 양식 또는 기타 유형의 콘텐츠를 렌더링하는 데 사용할 수 있습니다.
+
+<OptionTable
+  options={[
+    [
+      "main",
+      "React.FC<{ children: React.ReactNode }>",
+      "메인 콘텐츠의 컴포넌트.",
+    ],
+  ]}
+/>
+
+## TOC 사이드바 [#toc-sidebar]
+
+### 목차 [#table-of-contents]
+
+페이지 오른쪽에 목차를 표시합니다. 제목 간 탐색에 유용합니다.
+
+<OptionTable
+  options={[
+    [
+      "toc.component",
+      "React.ReactNode | React.FC<TOCProps>",
+      "TOC의 사용자 정의 렌더러.",
+    ],
+    [
+      "toc.extraContent",
+      "React.ReactNode | React.FC",
+      "TOC 콘텐츠 아래에 추가 콘텐츠를 표시합니다.",
+    ],
+    ["toc.float", "boolean", "콘텐츠 옆에 TOC를 띄웁니다."],
+    [
+      "toc.title",
+      "React.ReactNode | React.FC",
+      'TOC 사이드바의 제목. 기본값은 "On This Page"입니다.',
+    ],
+    [
+      "toc.headingComponent",
+      "React.FC<{ id: string, children: string }>",
+      "TOC 제목의 사용자 정의 렌더러.",
+    ],
+    ["toc.backToTop", "boolean", "`맨 위로 스크롤` 링크를 추가합니다."],
+  ]}
+/>
+
+#### 플로팅 TOC [#floating-toc]
+
+`toc.float`는 기본적으로 활성화되어 있습니다. 활성화되면 TOC가 페이지 오른쪽에 표시되고 스크롤 시 고정됩니다. 비활성화되면 TOC가 페이지 사이드바에 직접 표시됩니다.
+
+### 편집 링크 [#edit-link]
+
+GitHub(또는 다른 곳)의 파일 URL을 가리키는 "이 페이지 편집하기" 링크를 페이지에 표시합니다.
+
+<OptionTable
+  options={[
+    ["editLink.text", "React.ReactNode | React.FC", "기본 편집 링크의 내용."],
+    [
+      "editLink.component",
+      `React.FC<{
+  children: React.ReactNode
+  className?: string
+  filePath?: string
+}> | null`,
+      "사용자 정의 편집 링크 컴포넌트.",
+    ],
+  ]}
+/>
+
+<Callout type="info">
+  비활성화하려면 `editLink.component`를 `null`로 설정할 수 있습니다.
+</Callout>
+
+### 피드백 링크 [#feedback-link]
+
+내장된 피드백 링크는 사용자가 문서에 대한 피드백을 제출할 수 있는 방법을 제공합니다. 기본적으로 현재 웹사이트 제목이 미리 채워진 문서 저장소의 이슈 생성 양식을 가리키는 링크입니다: [예시](https://github.com/shuding/nextra/issues/new?title=Feedback%20for%20%E2%80%9CTheme%20Configuration%E2%80%9D&labels=feedback).
+
+<OptionTable
+  options={[
+    ["feedback.content", "React.ReactNode | React.FC", "피드백 버튼의 내용."],
+    [
+      "feedback.labels",
+      "string",
+      "새로 생성된 GitHub 이슈에 추가할 수 있는 라벨.",
+    ],
+    [
+      "feedback.useLink",
+      "() => string",
+      "사용자 정의 링크, 기본적으로 `docsRepositoryBase`에 설정된 저장소에 이슈를 열 것입니다.",
+    ],
+  ]}
+/>
+
+<Callout type="info">
+  비활성화하려면 `feedback.content`를 `null`로 설정할 수 있습니다.
+</Callout>
+
+## 페이지 하단 [#end-of-page]
+
+### 내비게이션 [#navigation]
+
+콘텐츠 하단에 이전 페이지와 다음 페이지 링크를 표시합니다. 페이지 간 탐색에 유용합니다.
+
+<OptionTable
+  options={[
+    [
+      "navigation",
+      "boolean | object",
+      "내비게이션 링크를 활성화하거나 비활성화합니다.",
+    ],
+    [
+      "navigation.prev",
+      "boolean",
+      "이전 페이지 링크를 활성화하거나 비활성화합니다.",
+    ],
+    [
+      "navigation.next",
+      "boolean",
+      "다음 페이지 링크를 활성화하거나 비활성화합니다.",
+    ],
+  ]}
+/>
+
+import navigationImage from "../../../public/assets/docs/navigation.png";
+
+<Screenshot src={navigationImage} alt="내비게이션" full />
+
+```jsx
+export default {
+  navigation: {
+    prev: true,
+    next: true,
+  },
+};
+```
+
+위의 설정은 `navigation: true`와 동일합니다.
+
+### 마지막 업데이트 날짜 [#last-updated-date]
+
+각 페이지의 마지막 업데이트 날짜를 표시합니다. 콘텐츠의 최신성을 보여주는 데 유용합니다.
+
+<OptionTable
+  options={[
+    [
+      "gitTimestamp",
+      "React.ReactNode | React.FC<{ timestamp: Date }>",
+      "마지막 업데이트 정보를 렌더링하는 컴포넌트.",
+    ],
+  ]}
+/>
+
+## 푸터 [#footer]
+
+웹사이트의 푸터 영역입니다. 기본 푸터에 일부 콘텐츠를 지정하거나 사용자 정의 컴포넌트로 완전히 사용자 정의할 수 있습니다.
+
+<OptionTable
+  options={[
+    [
+      "footer.text",
+      "React.ReactNode | React.FC",
+      "기본 푸터 컴포넌트의 콘텐츠.",
+    ],
+    [
+      "footer.component",
+      "React.ReactNode | React.FC<{ menu: boolean }>",
+      "사용자 정의 푸터 컴포넌트.",
+    ],
+  ]}
+/>
+
+### 저작권 정보 [#copyright-information]
+
+기본 푸터에 저작권 정보와 같은 간단한 콘텐츠를 추가할 수 있습니다:
+
+```jsx
+export default {
+  footer: {
+    text: (
+      <span>
+        MIT {new Date().getFullYear()} ©{" "}
+        <a href="https://nextra.site" target="_blank">
+          Nextra
+        </a>
+        .
+      </span>
+    ),
+  },
+};
+```
+
+## 테마 전환 [#theme-switch]
+
+<OptionTable
+  options={[
+    [
+      "themeSwitch.component",
+      "React.ReactNode | React.FC<{ lite?: boolean, className?: string }>",
+      "테마 전환을 렌더링하는 컴포넌트.",
+    ],
+    [
+      "themeSwitch.useOptions",
+      "ThemeOptions | () => ThemeOptions",
+      "테마 전환의 옵션.",
+    ],
+  ]}
+/>
+
+### 옵션 [#options]
+
+지역화나 다른 목적으로 옵션 이름을 사용자 정의할 수 있습니다:
+
+```jsx
+export default {
+  themeSwitch: {
+    useOptions() {
+      return {
+        light: "라이트",
+        dark: "다크",
+        system: "시스템",
+      };
+    },
+  },
+};
+```
+
+## 오류 페이지 [#error-pages]
+
+### 404 - 찾을 수 없음
+
+### 500 - 내부 서버 오류
+
+## 파비콘 글리프 (실험적)
+
+이는 모든 브라우저에서 지원되지 않지만, 이모지나 문자를 사용하여 웹사이트의 파비콘을 간단히 사용자 정의하는 좋은 방법입니다.
+
+<OptionTable
+  options={[["faviconGlyph", `string`, "파비콘으로 사용할 글리프."]]}
+/>

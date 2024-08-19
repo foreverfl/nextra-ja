@@ -1,0 +1,129 @@
+import { BoxIcon, GearIcon, RowsIcon } from "@components/icons";
+import { Callout, Card, Cards, Steps } from "nextra/components";
+
+# 문서 테마
+
+Nextra 문서 테마는 현대적인 문서 웹사이트를 구축하는 데 필요한 거의 모든 것을 포함하고 있는 테마입니다. 상단 내비게이션 바, 검색 바, 페이지 사이드바, TOC 사이드바 및 기타 내장 컴포넌트를 포함합니다.
+
+이 웹사이트 자체가 Nextra 문서 테마로 만들어졌습니다.
+
+## 템플릿에서 빠르게 시작하기
+
+### Vercel에 배포하기
+
+다음 링크를 클릭하여 자신만의 Nextra 사이트를 만들고 Vercel에 배포할 수 있습니다:
+
+<a
+  className="mt-3 inline-flex"
+  target="_blank"
+  href="https://vercel.com/new/clone?s=https%3A%2F%2Fgithub.com%2Fshuding%2Fnextra-docs-template&showOptionalTeamCreation=false"
+>
+  ![](https://vercel.com/button)
+</a>
+
+Vercel은 [Nextra 문서 템플릿](https://github.com/shuding/nextra-docs-template)을 포크하고 사이트를 배포할 것입니다. 완료되면 저장소의 모든 커밋이 자동으로 배포됩니다.
+
+### 템플릿 포크하기
+
+[템플릿 저장소](https://github.com/shuding/nextra-docs-template)를 수동으로 포크할 수도 있습니다.
+
+## 새 프로젝트로 시작하기
+
+<Steps>
+### 설치
+
+Nextra 문서 사이트를 수동으로 만들려면 **Next.js**, **React**, **Nextra**, **Nextra Docs Theme**를 설치해야 합니다. 프로젝트 디렉토리에서 다음 명령을 실행하여 의존성을 설치하세요:
+
+```sh npm2yarn
+npm i next react react-dom nextra nextra-theme-docs
+```
+
+<Callout>
+  프로젝트에 이미 Next.js가 설치되어 있다면 애드온으로 `nextra`와
+  `nextra-theme-docs`만 설치하면 됩니다.
+</Callout>
+
+`package.json`에 다음 스크립트를 추가하세요:
+
+```json filename="package.json"
+"scripts": {
+  "dev": "next",
+  "build": "next build",
+  "start": "next start"
+},
+```
+
+예를 들어 npm을 사용한다면 `npm run dev`로 개발 모드에서 서버를 시작하거나, 프로덕션 모드에서는 `npm run build && npm run start`로 시작할 수 있습니다.
+
+<Callout>
+  Next.js에 익숙하지 않다면, 개발 모드가 상당히 느리다는 점에 주의하세요.
+  Next.js가 탐색하는 모든 페이지를 컴파일하기 때문입니다.
+</Callout>
+
+### Next.js 설정 추가
+
+프로젝트의 루트 디렉토리에 다음과 같은 `next.config.js` 파일을 만드세요:
+
+```js filename="next.config.js"
+const withNextra = require("nextra")({
+  theme: "nextra-theme-docs",
+  themeConfig: "./theme.config.jsx",
+});
+
+module.exports = withNextra();
+
+// 다른 Next.js 설정이 있다면 매개변수로 전달할 수 있습니다:
+// module.exports = withNextra({ /* 다른 next.js 설정 */ })
+```
+
+위의 설정으로 Nextra는 지정된 테마로 Next.js 프로젝트의 Markdown 파일을 처리할 수 있습니다. 다른 Nextra 설정은 [가이드](/docs/guide)에서 찾을 수 있습니다.
+
+### 문서 테마 설정 생성
+
+마지막으로, 프로젝트의 루트 디렉토리에 해당하는 `theme.config.jsx` 파일을 만드세요. 이는 Nextra 문서 테마를 구성하는 데 사용됩니다:
+
+```jsx filename="theme.config.jsx"
+export default {
+  logo: <span>내 Nextra 문서</span>,
+  project: {
+    link: "https://github.com/shuding/nextra",
+  },
+  // ... 기타 테마 옵션
+};
+```
+
+전체 테마 구성은 [여기](/docs/docs-theme/theme-configuration)에서 찾을 수 있습니다.
+
+### 준비 완료!
+
+이제 `pages/index.mdx`로 첫 번째 MDX 페이지를 만들 수 있습니다:
+
+```mdx filename="pages/index.mdx"
+# Nextra에 오신 것을 환영합니다
+
+안녕하세요, 여러분!
+```
+
+그리고 `package.json`에 지정된 `next` 또는 `next dev` 명령을 실행하여 프로젝트 개발을 시작하세요! 🎉
+
+</Steps>
+
+다음으로, 문서 구조 구성 및 웹사이트 테마 구성에 대해 알아보려면 다음 섹션을 확인하세요:
+
+<Cards>
+  <Card
+    icon={<RowsIcon />}
+    title="페이지 구조"
+    href="/docs/docs-theme/page-configuration"
+  />
+  <Card
+    icon={<GearIcon />}
+    title="테마 구성"
+    href="/docs/docs-theme/theme-configuration"
+  />
+  <Card
+    icon={<BoxIcon />}
+    title="내장 컴포넌트"
+    href="/docs/docs-theme/built-ins"
+  />
+</Cards>

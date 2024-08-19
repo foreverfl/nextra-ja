@@ -1,0 +1,101 @@
+# Callout 컴포넌트
+
+독자에게 중요한 정보를 보여주기 위한 내장 컴포넌트입니다.
+
+import { Callout } from "nextra/components";
+
+## 예시
+
+<Callout>**콜아웃**은 주의를 끌기 위한 짧은 텍스트입니다.</Callout>
+
+<Callout type="info">**콜아웃**은 주의를 끌기 위한 짧은 텍스트입니다.</Callout>
+
+<Callout type="warning">
+  **콜아웃**은 주의를 끌기 위한 짧은 텍스트입니다.
+</Callout>
+
+<Callout type="error">**콜아웃**은 주의를 끌기 위한 짧은 텍스트입니다.</Callout>
+
+## 사용법
+
+### 기본
+
+<Callout emoji="👾">
+  **Space Invaders** is a 1978 shoot 'em up arcade game developed by Tomohiro
+  Nishikado.
+</Callout>
+
+```mdx
+import { Callout } from "nextra/components";
+
+<Callout emoji="👾">
+  **Space Invaders** is a 1978 shoot 'em up arcade game developed by Tomohiro
+  Nishikado.
+</Callout>
+```
+
+### 정보
+
+<Callout type="info" emoji="ℹ️">
+  Today is Friday.
+</Callout>
+
+```mdx
+import { Callout } from "nextra/components";
+
+<Callout type="info" emoji="ℹ️">
+  Today is Friday.
+</Callout>
+```
+
+### 경고
+
+<Callout type="warning" emoji="⚠️">
+  This API will be deprecated soon.
+</Callout>
+
+```mdx
+import { Callout } from "nextra/components";
+
+<Callout type="warning" emoji="⚠️">
+  This API will be deprecated soon.
+</Callout>
+```
+
+### 오류
+
+<Callout type="error" emoji="🚫">
+  This API will be deprecated soon.
+</Callout>
+
+```mdx
+import { Callout } from "nextra/components";
+
+<Callout type="error" emoji="️🚫">
+  This is a dangerous feature that can cause everything to explode.
+</Callout>
+```
+
+## API
+
+`Callout` 컴포넌트는 다음과 같은 props를 받습니다:
+
+### `type` (선택사항)
+
+Callout의 유형입니다.
+
+- 타입: `'default' | 'info' | 'warning' | 'error'`
+- 기본값: `'default'`
+
+### `emoji` (선택사항)
+
+Callout에 표시할 아이콘입니다. 이 prop을 사용하여 사용자 정의 아이콘도 표시할 수 있습니다.
+
+- 타입: `string | ReactNode`
+- 기본값: `'💡'`
+
+### `children`
+
+Callout의 내용입니다.
+
+- 타입: `ReactNode`
